@@ -71,7 +71,7 @@ class C_barang extends Controller
   			where('code', $parameter['code'])
   			->get();
   			if ($validate->count() > 0) {
-  				if ($validate[0]->id !== $parameter['id']) {
+  				if ($validate[0]->id != $parameter['id']) {
 			  		$response['code'] 		= 401;
 			  		$response['message'] 	= "Code barang sudah digunakan";
   				}
