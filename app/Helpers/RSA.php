@@ -22,7 +22,7 @@ class RSA {
         }
         $privkey = fread($f, filesize($privkey_file));
         fclose($f);
-
+        
         if(!openssl_private_decrypt(base64_decode($body["key"]), $_key, $privkey)) {
             http_response_code(500);
             echo json_encode(["message" => openssl_error_string(), "line" => 24]);

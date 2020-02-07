@@ -16,3 +16,10 @@ require('./components/Example');
 require('./components/barang/form/TextCode');
 require('./components/barang/form/TextBarang');
 require('./components/barang/Grid');
+
+require('./components/users/Grid');
+require('./components/users/form/TextFirstName');
+require('./components/users/form/TextLastName');
+require('./components/users/form/TextAddress');
+require('./components/users/form/TextEmail');
+require('./components/users/form/TextPhone');

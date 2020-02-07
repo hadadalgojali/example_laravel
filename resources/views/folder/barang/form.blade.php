@@ -10,7 +10,8 @@
 			<div id="textfield-code"  data-code="{{ $code }}"></div>
 			<div id="textfield-barang" data-barang="{{ $barang }}"></div>
 		</form>
-		<button class="btn btn-primary" id="btn-save">Simpan</button> <i id="loading" class="fa fa-spinner fa-pulse fa-fw" style="display: none;"></i>
+		<button class="btn btn-primary" id="btn-save">Simpan</button>
+		<button class="btn btn-danger" id="btn-delete" <?php echo strlen($id)>0?"":"disabled='disabled'"; ?>>Hapus</button> <i id="loading" class="fa fa-spinner fa-pulse fa-fw" style="display: none;"></i>
 	</div>
 @endsection
 
@@ -19,8 +20,10 @@
 		$("#btn-save").click(function(){
 			document.getElementById('msg-success').style.display = "none";
 			document.getElementById('msg-error').style.display = "none";
+
 			document.getElementById('loading').style.display = "";
 			document.getElementById('btn-save').disabled = true;
+			document.getElementById('btn-delete').disabled = true;
 			var url = "";
 
 			if ($("#id").val().length == 0) {
@@ -43,13 +46,51 @@
 				}
 				document.getElementById('loading').style.display = "none";
 				document.getElementById('btn-save').disabled = false;
-				// $("msg-success").html("Error connection");
+				if ($("#id").val().length > 0) {
+					document.getElementById('btn-delete').disabled = false;
+				}
 			})
 			.catch(error => {
 				document.getElementById('msg-error').style.display = "";
 				$("msg-error").html("Error connection");
 				document.getElementById('loading').style.display = "none";
 				document.getElementById('btn-save').disabled = false;
+				if ($("#id").val().length > 0) {
+					document.getElementById('btn-delete').disabled = false;
+				}
+			});
+		});
+
+		$("#btn-delete").click(function(){
+			document.getElementById('msg-success').style.display = "none";
+			document.getElementById('msg-error').style.display = "none";
+
+			document.getElementById('loading').style.display = "";
+			document.getElementById('btn-save').disabled = true;
+			document.getElementById('btn-delete').disabled = true;
+
+			axios.post("{{ URL('/') }}/api/v1/delete/barang", encrypt_parameter({
+				parameter : $("#form_process").serialize(),
+			}))
+			.then(function (response) {
+				console.log(response);
+				if (response.data.code == 200) {
+					document.getElementById('msg-success').style.display = "";
+					$("#msg-success").html(response.data.message);
+				}else{
+					document.getElementById('msg-error').style.display = "";
+					$("#msg-error").html(response.data.message);
+					document.getElementById('btn-save').disabled = false;
+					document.getElementById('btn-delete').disabled = false;
+				}
+				document.getElementById('loading').style.display = "none";
+			})
+			.catch(error => {
+				document.getElementById('msg-error').style.display = "";
+				$("msg-error").html("Error connection");
+				document.getElementById('loading').style.display = "none";
+				document.getElementById('btn-save').disabled = false;
+				document.getElementById('btn-delete').disabled = false;
 			});
 		});
 	</script>

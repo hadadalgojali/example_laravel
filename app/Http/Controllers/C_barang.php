@@ -5,17 +5,21 @@ namespace App\Http\Controllers;
 use RSAHelp;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Route;
 use App\M_barang;
 
 class C_barang extends Controller
 {
     //
+    public function index(){
+    	return view('folder/barang/index');
+    }
+
     public function create(Request $request){
   		DB::beginTransaction();
   		$response 	= array();
     	$parameter 	= array();
     	parse_str(RSAHelp::decrypte()['parameter'], $parameter);
-
   		$response['code'] 		= 200;
   		$response['message'] 	= $parameter['code']." - ".$parameter['barang']." berhasil di tambahkan";
 
@@ -38,6 +42,8 @@ class C_barang extends Controller
 	  		if ($query === false || $query == 0) {
 	  			$response['code'] = 401;
 	  			$response['message'] 	= $parameter['code']." - ".$parameter['barang']." tidak berhasil di tambahkan";
+	  		}else{
+	  			$response['id'] = $parameter['id'];
 	  		}
   		}
 
@@ -50,6 +56,7 @@ class C_barang extends Controller
 
  	   	echo json_encode($response);
     }
+
     public function update(Request $request){
   		DB::beginTransaction();
   		$response 	= array();
@@ -89,6 +96,37 @@ class C_barang extends Controller
 	  		}
   		}
 
+
+		if ($response['code']==200) {
+			DB::commit();
+		}else{
+			DB::rollBack();
+		}
+
+ 	   	echo json_encode($response);
+    }
+
+    public function delete(Request $request){
+  		DB::beginTransaction();
+  		$response 	= array();
+    	$parameter 	= array();
+  		$response['code'] 		= 200;
+  		$response['message'] 	= "Data berhasil di hapus";
+
+    	parse_str(RSAHelp::decrypte()['parameter'], $parameter);
+
+    	$query = M_barang::where('id', $parameter['id'])->get();
+    	if ($query->count() > 0) {
+    		$query = M_barang::find($parameter['id']);
+	    	$query = $query->delete();
+	    	if ($query == 0 || $query === false ) {
+	    		$response['code'] 		= 401;
+	  			$response['message'] 	= "Data gagal di hapus";
+	    	}
+    	}else{
+	    	$response['code'] 		= 401;
+	  		$response['message'] 	= "Data tidak ditemukan";
+    	}
 
 		if ($response['code']==200) {
 			DB::commit();

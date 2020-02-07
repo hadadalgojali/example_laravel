@@ -13,13 +13,16 @@
 
 Route::get('/', function () {
 	return view('folder/beranda/index');
-});
+})->name('beranda');
 
-Route::group(['prefix'  => 'barang'], function(){
-	Route::get('/', function () {
-		return view('folder/barang/index');
-	});
-
+Route::group(['prefix'  => 'barang', 'as'=>'barang.'], function(){
+	Route::get('/', array('uses' => 'C_barang@index', 'as' => 'index'));
     Route::get('/form', array('uses' => 'C_barang@get_form'));
     Route::get('/form/{id}', array('uses' => 'C_barang@get_form'));
+});
+
+Route::group(['prefix'  => 'users', 'as'=>'users.'], function(){
+	Route::get('/', array('uses' => 'C_users@index', 'as' => 'index'));
+    Route::get('/form', array('uses' => 'C_users@get_form'));
+    Route::get('/form/{id}', array('uses' => 'C_users@get_form'));
 });
